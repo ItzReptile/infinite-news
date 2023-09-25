@@ -36,14 +36,14 @@ const Navbar = () => {
           <AiOutlineBell className="text-3xl hover:bg-gray-200 rounded-full transition p-1" />
           <ul className="hidden space-x-4 lg:block">
             {links.map((link) => (
-              <a className="text-sm tracking-wide font-black text-[#242424] hover:bg-gray-200 rounded-full transition p-2" href={link.href}>{link.label}</a>
+              <a key={link.label} className="text-sm tracking-wide font-black text-[#242424] hover:bg-gray-200 rounded-full transition p-2" href={link.href}>{link.label}</a>
             ))}
-            <a href=""></a>
+           
           </ul>
         </div>
         <div className="lg:hidden">
             <h1 className="italic text-xl font-bold">
-                INF NEWS
+                INFINITE NEWS
             </h1>
         </div>
         <div className="space-x-6 flex">
