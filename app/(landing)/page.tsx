@@ -6,23 +6,48 @@ import Navbar from "../components/navbar";
 import axios from "axios";
 
 export default function Home() {
-  const [fetchData, setFetchData] = useState({ articles: [] });
-  const API = `https://newsapi.org/v2/everything?q=tesla&from=2023-08-24&sortBy=publishedAt&apiKey=d45c3485f8cf4038907c5eefa3af2e39`;
+  interface NewsItem {
+    title: string;
+    description: string;
+    author: string;
+    publishedAt: string;
+    urlToImage: string;
+  }
+  
+  const API = `https://api.newscatcherapi.com/v2/search?q=Tesla`;
+  const API_KEY = '4aaGGHb99yBHpwfYDQE61NKE-vGeR-XSnBBBNZdt38g';
+
+  const [fetchData, setFetchData] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchNews() {
       try {
-        const response = await axios.get(API);
-
+        const response = await axios.get(API, {
+          headers: {
+            'x-api-key': API_KEY
+          }
+        });
         setFetchData(response.data);
+        setLoading(false);
         console.log(response.data);
       } catch (error) {
         console.error("Error Fetching Data", error);
+        setLoading(false);
       }
     }
     fetchNews();
-  }, [API]);
+  }, []);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (fetchData.length === 0) {
+    return <div>No news available</div>;
+  }
+  
+  
   return (
     <div>
       <Navbar />
@@ -34,33 +59,38 @@ export default function Home() {
       </div>
       <div className="flex">
         <div className="ml-[225px]">
-          {fetchData.articles &&
-            fetchData.articles.slice(0, 5).map((news, index) => (
-              <div className="flex  max-w-[1000px] mx-auto border-b-2 border-black">
-                <div className="flex flex-col w-[625px] mr-2 space-y-1.5">
-                  <div key={index}>
-                    <h1 className="text-4xl font-semibold text-gray-600">
-                      {news.title}
-                    </h1>
-                    <h3 className="text-sm">{news.description}</h3>
-                    <h5 className="text-xs text-gray-700">By {news.author}</h5>
-                    <h5 className="font-black text-xs text-gray-500">
-                      {news.publishedAt}
-                    </h5>
-                  </div>
-                </div>
-
-                <div className="w-[625px] ">
-                  <figure className="max-w-[450px]  mt-2">
-                    <img className="w-[100%] h-[100%]" src={news.urlToImage} />
-                    <p className="text-xs">
-                      This Photo Displays Seth's Account Before The Trip To
-                      Georgia
-                    </p>
-                  </figure>
+        {fetchData.map((news, index) => (
+            <div
+              className="flex  max-w-[1000px] mx-auto border-b-2 border-black"
+              key={index}
+            >
+              <div className="flex flex-col w-[625px] mr-2 space-y-1.5">
+                <div>
+                  <h1 className="text-4xl font-semibold text-gray-600">
+                    {news.title}
+                  </h1>
+                  <h3 className="text-sm">{news.description}</h3>
+                  <h5 className="text-xs text-gray-700">By {news.author}</h5>
+                  <h5 className="font-black text-xs text-gray-500">
+                    {news.publishedAt}
+                  </h5>
                 </div>
               </div>
-            ))}
+
+              <div className="w-[625px] ">
+                <figure className="max-w-[450px]  mt-2">
+                  <img
+                    className="w-[100%] h-[100%]"
+                    src={news.urlToImage}
+                    alt={news.title}
+                  />
+                  <p className="text-xs">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus eius repellendus impedit molestias eum cumque earum sequi, itaque libero quaerat!
+                  </p>
+                </figure>
+              </div>
+            </div>
+          ))}
         </div>
         <div className="ml-[75px]">
           <Leftbar />
